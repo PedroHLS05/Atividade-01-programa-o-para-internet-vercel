@@ -1,68 +1,108 @@
-import express from "express";
-const app = express();
+import express from 'express';
 
-const porta = process.env.porta // 3000;
+const host = '0.0.0.0';
+const porta = 3000;
 
-app.get("/", (req, res) => {
+const server = express(); //oferecendo ao desenvolvedor um servidor http de modo expresso
 
-    const { idade, sexo, salario_base, anoContratacao, matricula } = req.query;
+//recheando servidor com funcionalidades
 
-    // Se não informar parâmetros, mostra instruções
-    if (!idade || !sexo || !salario_base || !anoContratacao || !matricula) {
-        return res.send(`
-            <h2>Instruções</h2>
-            <p>Informe na URL os seguintes dados:</p>
-            <p>
-            http://localhost:3000/?idade=18&sexo=F&salario_base=1700&anoContratacao=2014&matricula=12345
-            </p>
+server. get('/', (requisicao, resposta) => {
+    resposta.send(`
+        <DOCTYPE html>
+        <html lang="pt-br">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Atividade 01 programa para internet usando node + express</title>
+            </head>
+            <body>
+                <h1>Atividade 01 programa para internet usando node + express</h1>
+                <h2>Olá, bem-vindo a página inicial</h2>
+            </body>
+            </html>
+
         `);
-    }
+});
 
-    // Conversões
-    const idadeNum = parseInt(idade);
-    const salarioNum = parseFloat(salario_base);
-    const anoNum = parseInt(anoContratacao);
-    const matriculaNum = parseInt(matricula);
-
-    // Validações
-    if (
-        idadeNum <= 16 ||
-        isNaN(salarioNum) ||
-        anoNum <= 1960 ||
-        matriculaNum <= 0
-    ) {
-        return res.send("<h3>Não foi possível realizar o cálculo. Dados inválidos.</h3>");
-    }
-
-    // Regra de reajuste (exemplo simples)
-    let percentual = 0;
-
-    if (sexo === "F") {
-        percentual = 0.10;
-    } else {
-        percentual = 0.05;
-    }
-
-    if (anoNum < 2010) {
-        percentual += 0.05;
-    }
-
-    const novoSalario = salarioNum + (salarioNum * percentual);
-
-    res.send(`
-        <h2>Dados do Funcionário</h2>
-        <p>Idade: ${idadeNum}</p>
-        <p>Sexo: ${sexo}</p>
-        <p>Salário Base: R$ ${salarioNum.toFixed(2)}</p>
-        <p>Ano de Contratação: ${anoNum}</p>
-        <p>Matrícula: ${matriculaNum}</p>
-        <hr>
-        <h2 style="color:green;">
-            Novo Salário: R$ ${novoSalario.toFixed(2)}
-        </h2>
+server.get('/horaAtual', (requisicao, resposta) => {
+    const horaAtual = new Date();
+    const hora = horaAtual.getHours() + ":" + horaAtual.getMinutes() + ":" + horaAtual.getSeconds();
+    resposta.send(`
+        <DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Horário do servidor</title>
+         </head>
+         <body>
+            <h1>Agora são ${hora}</h1>
+         </body>
+         </html>
+            
     `);
 });
 
-app.listen(porta, () => {
-    console.log(`Servidor rodando na porta ${porta}`);
+//criar um método que aceita parãmetros
+server.get('/tabuada', (requisicao, resposta) => {
+    //tabuada de qual numero e até qual sequencia?
+    const numero = requisicao.query.numero;
+    const sequecia = requisicao.query.sequencia;
+    if (!numero || !sequecia) {
+        resposta.send(`
+        <DOCTYPE html>
+        <html lang="pt-br">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Tabuada</title>
+            </head>
+            <body>
+                <h1>tabuada</h1>
+                <h2>Por favor, informe o número e sequencia na URL</h2>
+                <h3>http://localhost:3000/tabuada?numero=5&sequencia=10</h3>
+            </body>
+        </html>
+    `);
+    }
+    else{
+        //informar para o navegador cliente que a resposta/conteúdo é html
+        resposta.setHeader('Content-Type', 'text/html');
+        
+        resposta.write(`
+            <DOCTYPE html>
+        <html lang="pt-br">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Tabuada</title>
+            </head>
+            <body>
+                <h1>tabuada do ${numero} até a sequencia de ${sequecia}</h1>
+                <ul>
+       `);
+
+        for (let i = 1; i <= sequecia; i++) {
+            resposta.write(`
+                <li>${numero} x ${i} = ${numero * i}</li>`);
+        }
+
+        resposta.write(`
+            </ul>
+            </body>
+            </html>
+        `); 
+        resposta.end(); //finaliza e envia
+    }
+
+
+});
+
+server.listen(porta, host, () => {
+    console.log(`Servidor escutando em http://${host}:${porta}`);
 });
