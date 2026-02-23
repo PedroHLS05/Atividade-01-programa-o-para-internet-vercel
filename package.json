@@ -1,0 +1,31 @@
+{
+  "name": "atividade-01-programa-o-para-internet-vercel",
+  "version": "1.0.0",
+  "description": "Primeira atividade para internet_recalculo de salario",
+  "keywords": [
+    "http",
+    "express",
+    "node",
+    "PPI"
+  ],
+  "homepage": "https://github.com/PedroHLS05/Atividade-01-programa-o-para-internet-vercel#readme",
+  "bugs": {
+    "url": "https://github.com/PedroHLS05/Atividade-01-programa-o-para-internet-vercel/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PedroHLS05/Atividade-01-programa-o-para-internet-vercel.git"
+  },
+  "license": "ISC",
+  "author": "Pedro Lopes",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {}
+}
